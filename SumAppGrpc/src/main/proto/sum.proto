@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package sumgrpc;
+
+option java_multiple_files = true;
+// Chosen Name that is used in importing the services, and messages.
+option java_package = "org.example.sumgrpc";
+option java_outer_classname = "Sum";
+
+
+// The Sum service definition
+service SumService {
+
+  // Adds two numbers
+  rpc AddTwoNumbers (SumRequest)  returns (SumReply) {}
+}
+
+
+// The request message containing the two numbers to be added
+message SumRequest {
+  int32 num1 = 1;
+  int32 num2 = 2;
+}
+
+// The response message containing their addition.
+message SumReply {
+  string message = 1;
+  int32 sum = 2;
+}
+

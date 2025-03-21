@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sum-svc-nodeport
+spec:
+  selector:
+    app: sum-grpc
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 50051
+      targetPort: 50051
+
