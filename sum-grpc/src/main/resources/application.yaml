@@ -1,0 +1,34 @@
+spring:
+  server:
+    port: 9001
+  application:
+    name: sum-grpc
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sumstreamdb
+    username: postgres
+
+#    url: jdbc:postgresql://postgres-postgresql.04--service.svc.cluster.local:5432/sumstreamdb # For connecting to K8s
+#    username: postgres_user
+#    password: postgres_pass
+#    driver-class-name: org.postgresql.Driver
+
+#  spring.sql.init.mode: always in your application.yaml. That tells Spring Boot's DataSourceInitializer to run SQL scripts on every startup.
+#    Where it looks by default: Spring Boot scans the classpath root for files named exactly schema.sql and data.sql. Since src/main/resources/ compiles to the classpath root, it finds yours automatically —
+#    no explicit reference needed. That's the "magic" part that makes the connection invisible.
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
+logging:
+  level:
+    # Shows every SQL statement Spring Data JDBC executes
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+
+#  kafka:
+#    #    bootstrap-servers: localhost:9092
+#    #    bootstrap-servers: sum-kafka.04--service.svc.cluster.local:9092
+#
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer

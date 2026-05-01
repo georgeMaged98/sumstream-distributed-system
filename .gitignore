@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven build output
+target/
+
+# Go build artifacts
+sum-store-go-api/sum-store-api
