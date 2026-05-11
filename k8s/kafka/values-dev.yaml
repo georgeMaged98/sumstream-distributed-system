@@ -1,0 +1,25 @@
+sasl:
+  enabledMechanisms: PLAIN
+  client:
+    users:
+      - user1
+      - user2
+    passwords:
+      - pass1
+      - pass2
+
+listeners:
+  client:
+    protocol: SASL_PLAINTEXT
+
+controller:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+
+persistence:
+  enabled: true
+  size: 20Gi
+

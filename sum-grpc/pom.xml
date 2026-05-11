@@ -157,6 +157,29 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.3.2</version> <!-- Use the latest version -->
+				<configuration>
+					<!-- Base image -->
+					<from>
+						<image>eclipse-temurin:21-jre-alpine</image>
+					</from>
+					<!-- Destination image -->
+					<to>
+						<image>registry.hub.docker.com/georgemaged/sum-grpc</image>
+						<tags>
+							<tag>latest</tag> <!-- Tag the image as "latest" -->
+						</tags>
+					</to>
+					<!-- Specify the main class -->
+					<container>
+						<mainClass>com.sumstream.sum.grpc.SumGrpcApplication</mainClass>
+					</container>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

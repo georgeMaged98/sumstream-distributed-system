@@ -2,18 +2,24 @@ package com.sumstream.sum.grpc.services;
 
 import com.sumstream.sum.grpc.entity.OutboxMessage;
 import com.sumstream.sum.grpc.repository.OutboxRepository;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 
+
 @Service
 public class OutboxProcessor {
 
-    private final OutboxRepository outboxRepository;
+    private static final String TOPIC = "sum-topic";
 
-    public OutboxProcessor(OutboxRepository outboxRepository) {
+    private final OutboxRepository outboxRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    public OutboxProcessor(OutboxRepository outboxRepository, KafkaTemplate<String, String> kafkaTemplate) {
         this.outboxRepository = outboxRepository;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     @Scheduled(fixedDelay = 30000) // Every 30 seconds
@@ -21,23 +27,20 @@ public class OutboxProcessor {
         List<OutboxMessage> pending = outboxRepository.findUnprocessedMessages();
 
         for (OutboxMessage message : pending) {
-            OutboxMessage msg = null;
+            OutboxMessage msg;
             try {
-                // 1. Process message (your logic here)
                 processMessage(message);
 
-                // 2. Save success state
                 msg = new OutboxMessage(
                         message.id(),
                         message.type(),
                         message.content(),
                         message.occurredOnUTC(),
-                        Instant.now(),       // processed_on_utc
-                        null                 // error
+                        Instant.now(),
+                        null
                 );
 
             } catch (Exception e) {
-                // Save error
                 msg = new OutboxMessage(
                         message.id(),
                         message.type(),
@@ -46,16 +49,14 @@ public class OutboxProcessor {
                         null,
                         e.getMessage()
                 );
-
-            } finally {
-                outboxRepository.save(msg);
             }
+
+            outboxRepository.save(msg);
         }
     }
 
     private void processMessage(OutboxMessage msg) {
-        // send to Kafka
-        System.out.println("Processing outbox: " + msg.type());
+        kafkaTemplate.send(TOPIC, msg.type(), msg.content());
     }
 
 }

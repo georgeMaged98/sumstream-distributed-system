@@ -6,9 +6,10 @@ import com.sumstream.sum.grpc.proto.SumRequest;
 import com.sumstream.sum.grpc.repository.SumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.sumstream.sum.grpc.repository.OutboxRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 
 @Service
@@ -25,12 +26,11 @@ public class SumService {
     @Transactional
     public long addTwoNumbers(SumRequest sumRequest) {
 
-        long twoNumbersSum = sumRequest.getNum1() + sumRequest.getNum2();
         // To achieve outbox pattern and have multiple statements in transactions.
-        Sum sum = Sum.of(sumRequest.getNum1(), sumRequest.getNum2(), twoNumbersSum);
+        Sum sum = Sum.of(sumRequest.getNum1(), sumRequest.getNum2());
         Sum savedSum = sumRepository.save(sum);
 
-        OutboxMessage outboxMessage = OutboxMessage.of("NumbersSum", sumRequest);
+        OutboxMessage outboxMessage = OutboxMessage.of("NumbersSum", Map.of("sum", sum.sum()));
         outboxRepository.save(outboxMessage);
 
         return savedSum.id();

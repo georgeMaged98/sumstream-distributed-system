@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sum-grpc-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sum-grpc
+  template:
+    metadata:
+      labels:
+        app: sum-grpc
+    spec:
+      containers:
+        - name: sum-grpc
+          image: georgemaged/sum-grpc:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9090
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres-postgresql.default.svc.cluster.local:5432/sumdb"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres_user"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "postgres_pass"
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka.default.svc.cluster.local:9092"
