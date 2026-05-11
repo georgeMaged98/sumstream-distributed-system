@@ -1,0 +1,48 @@
+auth:
+  postgresPassword: 'postgresadminpass' # Password for the "postgres" admin user. Ignored if auth.existingSecret is provided
+  username: 'postgres_user'
+  password: 'postgres_pass'
+  database: 'sumdb'
+
+primary:
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      cpu: '100m'
+      memory: '256Mi'
+    limits:
+      cpu: '500m'
+      memory: '512Mi'
+  initdb:
+    scripts:
+      create_table.sql: |
+        CREATE TABLE IF NOT EXISTS nums (
+                id SERIAL PRIMARY KEY,
+                num1 INTEGER NOT NULL,
+                num2 INTEGER NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+
+        INSERT INTO nums (num1, num2)
+        VALUES (10, 20), (30, 40), (50, 60);
+
+        CREATE TABLE IF NOT EXISTS outbox_messages (
+                id SERIAL PRIMARY KEY,
+                type VARCHAR(100) NOT NULL,
+                content JSONB NOT NULL,
+                occurred_on_utc TIMESTAMP WITH TIME ZONE NOT NULL,
+                processed_on_utc TIMESTAMP WITH TIME ZONE NULL,
+                error Text NULL
+            );
+
+architecture: 'standalone' # no replication
+
+# Metrics Parameters: setup a prometheus exporter for metrics.
+metrics:
+  enabled: false # Disable metrics in dev
+
+volumePermissions:
+  enabled: false # Needed for KinD persistence to work properly
+
