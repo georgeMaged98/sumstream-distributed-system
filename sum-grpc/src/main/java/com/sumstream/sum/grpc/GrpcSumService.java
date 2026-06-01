@@ -30,13 +30,13 @@ public class GrpcSumService extends SumServiceGrpc.SumServiceImplBase {
     public void addTwoNumbers(SumRequest request, StreamObserver<SumReply> responseObserver) {
 
         try {
-            sumService.addTwoNumbers(request);
-
+            long sumID = sumService.addTwoNumbers(request);
+            int sum = request.getNum1() + request.getNum2();
 
             // SumReply is the response Object defined in .proto
             // Protobuf uses the builder pattern to construct immutable objects.
             // Prepare rpc reply
-            SumReply reply = SumReply.newBuilder().setMessage("Sum: " + (request.getNum1() + request.getNum2())).build();
+            SumReply reply = SumReply.newBuilder().setMessage("Sum: " + sum).setSum(sum).build();
 
 
             // The onNext method is used to send a single response in a unary RPC (one request, one response)

@@ -22,7 +22,7 @@ public class OutboxProcessor {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @Scheduled(fixedDelay = 30000) // Every 30 seconds
+    @Scheduled(fixedDelay = 3000) // Every 3 seconds
     public void processOutbox() {
         List<OutboxMessage> pending = outboxRepository.findUnprocessedMessages();
 

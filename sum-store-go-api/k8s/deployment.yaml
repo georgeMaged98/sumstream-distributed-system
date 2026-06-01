@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sum-store-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sum-store-api
+  template:
+    metadata:
+      labels:
+        app: sum-store-api
+    spec:
+      containers:
+        - name: sum-store-go-api
+          image: georgemaged/sum-store-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka.default.svc.cluster.local:9092"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"

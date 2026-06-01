@@ -25,6 +25,6 @@ message SumRequest {
 // The response message containing their addition.
 message SumReply {
   string message = 1;
-  int32 sum = 2;
+  int64 sum = 2;
 }
 
